@@ -1,0 +1,8 @@
+Assets/Mirror/
+Library/
+obj/
+Temp/
+.vs/
+*.csproj
+*.sln
+Logs/Packages-Update.log
