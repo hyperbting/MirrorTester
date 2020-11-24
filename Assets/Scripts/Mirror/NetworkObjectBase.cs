@@ -9,7 +9,7 @@ public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority
 {
 
     [SyncVar(hook = nameof(InitSyncRemote))]
-    public CreationNetworkMessage message;
+    [SerializeField] CreationNetworkMessage message;
     public Transform meshRoot;
 
     readonly string ScrTag = "NetworkObjectBase";
@@ -25,6 +25,20 @@ public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority
             }
 
             return gameObject.AddComponent<NetworkTransform>();
+        }
+    }
+
+    [SerializeField] NetworkTransformChild netTransformChild;
+    public NetworkTransformChild NetTransformChild
+    {
+        get
+        {
+            if (TryGetComponent<NetworkTransformChild>(out var res))
+            {
+                return res;
+            }
+
+            return gameObject.AddComponent<NetworkTransformChild>();
         }
     }
 
@@ -56,20 +70,22 @@ public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority
     // setter @server
     public void ServerInit(CreationNetworkMessage pcnMsg)
     {
-        Debug.Log($"NetworkObjectBase.Init {pcnMsg.ToString()}");
+        if (!isServer) return;
 
-        Debug.Log($"NetworkObjectBase.Init Trigger InitSyncRemote");
+        Debug.Log($"NetworkObjectBase.ServerInit {pcnMsg.ToString()}");
+
         message = pcnMsg;
+        Debug.Log($"NetworkObjectBase.ServerInit Trigger Client InitSyncRemote");
 
-        Debug.Log($"NetworkObjectBase.Init End");
+        Debug.Log($"NetworkObjectBase.ServerInit End {message.ToString()}");
     }
 
     //When CreationNetworkMessage message set, trigger this method
-    public void InitSyncRemote(CreationNetworkMessage old, CreationNetworkMessage newObj)
+    public void InitSyncRemote(CreationNetworkMessage last, CreationNetworkMessage cnm)
     {
-        Debug.Log($"NetworkObjectBase.InitSyncRemote { newObj }");
+        Debug.Log($"NetworkObjectBase.InitSyncRemote { message }");
         var nt = GetComponent<NetworkTransform>();
-        switch (newObj.networkSyncType)
+        switch (cnm.networkSyncType)
         {
             case NetworkSyncType.Player:
 
@@ -94,7 +110,7 @@ public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority
     {
         base.OnStartAuthority();
 
-        Debug.Log($"I own {NID.netId}");
+        Debug.Log($"I own {NID.netId} {message.ToString()}");
         OnAuthorityObtained?.Invoke();
     }
 
@@ -103,7 +119,7 @@ public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority
     {
         base.OnStopAuthority();
 
-        Debug.Log($"I lose {NID.netId}");
+        Debug.Log($"I lose {NID.netId} {message.ToString()}");
         OnAuthorityReleased?.Invoke();
     }
 }

@@ -10,8 +10,6 @@ public class InstantiateHelper : NetworkBehaviour
     public void CmdAddOne(CreationNetworkMessage cnm)
     {
         GameObject nBase = Instantiate(networkedBase);
-        var nob = GetComponent<NetworkObjectBase>();
-        nob.ServerInit(cnm);
 
         switch (cnm.networkSyncType)
         {
@@ -25,5 +23,8 @@ public class InstantiateHelper : NetworkBehaviour
             default:
                 break;
         }
+
+        var nob = nBase.GetComponent<NetworkObjectBase>();
+        nob.ServerInit(cnm);
     }
 }

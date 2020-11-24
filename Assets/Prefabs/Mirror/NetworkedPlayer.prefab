@@ -67,6 +67,28 @@ MonoBehaviour:
   tra: {fileID: 0}
   authorityHelper: {fileID: 4186677454368777581}
   instantiateHelper: {fileID: 6761565878886027598}
+--- !u!114 &3622512898873512906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3698786482076161787}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83392ae5c1b731446909f252fd494ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  target: {fileID: 0}
+  clientAuthority: 1
+  syncVelocity: 0
+  clearVelocity: 0
+  velocitySensitivity: 0.1
+  syncAngularVelocity: 0
+  clearAngularVelocity: 0
+  angularVelocitySensitivity: 0.1
 --- !u!1001 &4553631863970156720
 PrefabInstance:
   m_ObjectHideFlags: 0

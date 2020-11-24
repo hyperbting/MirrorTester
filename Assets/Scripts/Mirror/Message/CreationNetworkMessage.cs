@@ -18,9 +18,9 @@ public struct CreationNetworkMessage : NetworkMessage
         return UnityEngine.JsonUtility.ToJson(this);
     }
 
-    // Mirror will automatically implement message that are empty
-    public void Deserialize(NetworkReader reader) { }
-    public void Serialize(NetworkWriter writer) { }
+    //// Mirror will automatically implement message that are empty
+    //public void Deserialize(NetworkReader reader) { }
+    //public void Serialize(NetworkWriter writer) { }
 }
 
 public enum NetworkSyncType : byte
