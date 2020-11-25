@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority
+public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority, IPooledObject
 {
 
     [SyncVar(hook = nameof(InitSyncRemote))]
@@ -129,4 +129,8 @@ public interface IObjectAuthority
     NetworkIdentity NID { get; }
     Action OnAuthorityObtained { get; set; }
     Action OnAuthorityReleased { get; set; }
+}
+
+public interface IPooledObject
+{
 }

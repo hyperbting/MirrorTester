@@ -20,6 +20,8 @@ public class PlayerMainSync : NetworkBehaviour
 
     private void Start()
     {
+        DontDestroyOnLoad(this);
+
         if (hasAuthority)
         {
             gameObject.name = string.Format($"HostPlayerToken [{netId}]");

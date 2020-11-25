@@ -64,6 +64,11 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
             playerSyncData?.instantiateHelper.CmdAddOne(new CreationNetworkMessage() { networkSyncType = NetworkSyncType.PlayerObject });//MainService.Instance.networkCommand.CmdAddOne();
         }
 
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            playerSyncData?.instantiateHelper.CmdRemoveOne(playerSyncData?.targetNI.gameObject);
+        }
+
         if (Input.GetKeyDown(KeyCode.G))
             playerSyncData?.RequestAuthority();
         if (Input.GetKeyDown(KeyCode.H))

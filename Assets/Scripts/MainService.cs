@@ -26,4 +26,5 @@ public class MainService : MonoBehaviour
 
     public PlayerManager playerManager;
     public MirrorNetworkManager networkManager;
+    public PoolManager poolManager;
 }

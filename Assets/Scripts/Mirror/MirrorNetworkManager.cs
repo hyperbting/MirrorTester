@@ -85,7 +85,7 @@ public partial class MirrorNetworkManager : NetworkManager, INetworkManagerCallb
     {
         base.OnStopServer();
 
-        OnStopServerEvent.Invoke();
+        OnStopServerEvent?.Invoke();
     }
     #endregion
 
