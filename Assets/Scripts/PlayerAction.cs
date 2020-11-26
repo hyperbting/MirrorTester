@@ -32,28 +32,30 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
         UserInput();
     }
 
+    // can be replace with new InputSystem
     void UserInput()
     {
         // rotate
         float horizontal = Input.GetAxis("Horizontal");
         //transform.Rotate(horizontal * rotationSpeed * Time.deltaTime, 0, 0);
-        Vector3 rightward = transform.TransformDirection(Vector3.right) * horizontal * Time.deltaTime;
+        Vector3 rightward = transform.TransformDirection(Vector3.right) * horizontal;
 
         // move
         float vertical = Input.GetAxis("Vertical");
-        //Vector3 forward = transform.TransformDirection(Vector3.forward)* Mathf.Max(vertical, 0);
-        Vector3 upward = transform.TransformDirection(Vector3.up) * vertical * Time.deltaTime;
+        Vector3 forward = transform.TransformDirection(Vector3.forward) * vertical;//* Mathf.Max(vertical, 0);
+        //Vector3 upward = transform.TransformDirection(Vector3.up) * vertical * Time.deltaTime;
 
         // use NavMesh
         if (agent != null)
         {
-            //agent.velocity = forward  * agent.speed;
+            agent.Move((forward + rightward)*Time.deltaTime);
+            //agent.velocity = (forward + rightward) * agent.speed;
             //animator.SetBool("Moving", agent.velocity != Vector3.zero);
         }
-        else
-        {
-            transform.position = transform.position + upward + rightward;
-        }
+        //else
+        //{
+        //    transform.position = transform.position + upward + rightward;
+        //}
 
         if (Input.GetKeyDown(KeyCode.F))
         {
