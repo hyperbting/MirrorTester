@@ -27,7 +27,7 @@ public class InstantiateHelper : NetworkBehaviour
         }
 
         var nob = nBase.GetComponent<NetworkObjectBase>();
-        nob.ServerInit(cnm);
+        nob.ServerSideInit(cnm);
     }
 
     [Command]

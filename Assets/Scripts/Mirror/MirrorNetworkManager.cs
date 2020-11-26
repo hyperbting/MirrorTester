@@ -37,6 +37,8 @@ public partial class MirrorNetworkManager : NetworkManager, INetworkManagerCallb
     {
         base.OnStartServer();
 
+        //NetworkServer.RegisterHandler<PlayerCreationNetworkMessage>(playerPrefab.GetComponent<PlayerMainSync>().OnCreateCharacter);
+
         OnStartServerEvent?.Invoke();
     }
 
@@ -103,14 +105,14 @@ public partial class MirrorNetworkManager : NetworkManager, INetworkManagerCallb
     {
         base.OnClientConnect(conn);
 
-        //Debug.Log("OnClientConnect");
-        //// you can send the message here, or wherever else you want
-        //var characterMessage = new CreationNetworkMessage
+        //var pcnm = new PlayerCreationNetworkMessage()
         //{
-        //    networkSyncType = NetworkSyncType.Player
+        //    baseCreateion = new CreationNetworkMessage()
+        //    {
+        //        networkSyncType = NetworkSyncType.Player
+        //    }
         //};
-
-        //conn.Send(characterMessage);
+        //conn.Send(pcnm);
 
         OnClientConnectEvent?.Invoke(conn);
     }
@@ -181,6 +183,7 @@ public partial class MirrorNetworkManager : NetworkManager, INetworkManagerCallb
     //01x OnStopServer shared with SERVER
     #endregion
     #endregion
+
 }
 
 public interface INetworkManagerCallbacks

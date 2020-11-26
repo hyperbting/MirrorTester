@@ -8,7 +8,7 @@ using UnityEngine;
 public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority, IPooledObject
 {
 
-    [SyncVar(hook = nameof(InitSyncRemote))]
+    [SyncVar(hook = nameof(ClientSideRemoteInit))]
     [SerializeField] CreationNetworkMessage message;
     public Transform meshRoot;
 
@@ -67,21 +67,26 @@ public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority, IPooledObje
         Debug.Log($"{ScrTag}.Start hasAuthority:{ hasAuthority }");
     }
 
+    public string GetPooledObjectTypeID()
+    {
+        return netIdentity.assetId.ToString();
+    }
+
     // setter @server
-    public void ServerInit(CreationNetworkMessage pcnMsg)
+    public void ServerSideInit(CreationNetworkMessage pcnMsg)
     {
         if (!isServer) return;
 
         Debug.Log($"NetworkObjectBase.ServerInit {pcnMsg.ToString()}");
 
         message = pcnMsg;
-        Debug.Log($"NetworkObjectBase.ServerInit Trigger Client InitSyncRemote");
+        Debug.Log($"NetworkObjectBase.ServerInit Trigger ClientSideRemoteInit");
 
         Debug.Log($"NetworkObjectBase.ServerInit End {message.ToString()}");
     }
 
     //When CreationNetworkMessage message set, trigger this method
-    public void InitSyncRemote(CreationNetworkMessage last, CreationNetworkMessage cnm)
+    public void ClientSideRemoteInit(CreationNetworkMessage last, CreationNetworkMessage cnm)
     {
         Debug.Log($"NetworkObjectBase.InitSyncRemote { message }");
         var nt = GetComponent<NetworkTransform>();
@@ -133,4 +138,5 @@ public interface IObjectAuthority
 
 public interface IPooledObject
 {
+    string GetPooledObjectTypeID();
 }

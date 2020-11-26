@@ -22,7 +22,7 @@ public class AuthorityHelper : NetworkBehaviour
         if (targetNI == null)
             return;
 
-        Debug.Log($"Server] before Release {targetNI.netId}, Req:{connectionToClient} | OwnBy:{targetNI?.connectionToClient ?? null}");
+        Debug.Log($"Server] before Release {targetNI.netId}, Req:{connectionToClient}, OwnBy:{targetNI?.connectionToClient ?? null}");
 
         if (connectionToClient == targetNI.connectionToClient)
             targetNI.RemoveClientAuthority();
@@ -36,18 +36,18 @@ public class AuthorityHelper : NetworkBehaviour
         if (targetNI == null)
             return;
 
-        Debug.Log($"Server] before TakeOver {targetNI.netId}, Req:{connectionToClient} | OwnBy:{targetNI?.connectionToClient ?? null}");
+        Debug.Log($"Server] before TakeOver {targetNI.netId}, Req:{connectionToClient}, OwnBy:{targetNI?.connectionToClient ?? null}");
 
         // targetNI.connectionToClient means OwnedByNone
         if (targetNI.connectionToClient == null)
             targetNI.AssignClientAuthority(connectionToClient);
         else if (targetNI.connectionToClient == connectionToClient)
         {
-            Debug.Log($"this is Already owned by Requester");
+            Debug.Log($"Requester Already OWNED {targetNI.netId}");
         }
         else
         {
-            Debug.LogWarning($"{targetNI.netId} is owned by connectionId:{targetNI?.connectionToClient ?? null}");
+            Debug.LogWarning($"{targetNI.netId} was OWNED by connectionId:{targetNI?.connectionToClient ?? null}");
         }
     }
 }

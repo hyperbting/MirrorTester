@@ -11,12 +11,20 @@ public class PlayerMainSync : NetworkBehaviour
     readonly string ScrTag = "PlayerMainSync";
 
     [Header("Interactee")]
-    public NetworkObjectBase targetNI;
+    [SerializeField] Transform tra;
 
     [Header("Debug")]
-    [SerializeField] Transform tra;
+    [SerializeField] Collider col;
+
     public AuthorityHelper authorityHelper;
     public InstantiateHelper instantiateHelper;
+
+    [SerializeField] NetworkTransform nTra;
+    private void OnDisable()
+    {
+        nTra.enabled = false;
+        nTra.clientAuthority = false;
+    }
 
     private void Start()
     {
@@ -53,14 +61,22 @@ public class PlayerMainSync : NetworkBehaviour
         }
     }
 
-    public void RequestAuthority()
+    public void RequestAuthority(GameObject go)
     {
-        authorityHelper.CmdRequestAuthority(targetNI?.NID);
+        if (go == null)
+            return;
+
+        var ni = go.GetComponent<NetworkIdentity>();
+        authorityHelper.CmdRequestAuthority(ni);
     }
 
-    public void RemoveClientAuthority()
+    public void RemoveClientAuthority(GameObject go)
     {
-        authorityHelper.CmdRemoveClientAuthority(targetNI?.NID);
+        if (go == null)
+            return;
+
+        var ni = go.GetComponent<NetworkIdentity>();
+        authorityHelper.CmdRemoveClientAuthority(ni);
     }
 
     #region Client2Server
@@ -70,4 +86,25 @@ public class PlayerMainSync : NetworkBehaviour
         usrID = uid;
     }
     #endregion
+
+    //public void OnCreateCharacter(NetworkConnection conn, PlayerCreationNetworkMessage message)
+    //{
+    //    // playerPrefab is the one assigned in the inspector in Network Manager
+    //    GameObject gameobject = MainService.Instance.poolManager.Instantiate(
+    //        MainService.Instance.networkManager.playerPrefab, 
+    //        transform.position, 
+    //        Quaternion.identity
+    //    ); //Instantiate(playerPrefab);
+
+    //    //// Apply data from the message however appropriate for your game
+    //    //Player player = gameobject.GetComponent<Player>();
+
+    //    // call this to use this gameobject as the primary controller
+    //    NetworkServer.AddPlayerForConnection(conn, gameobject);
+    //}
+}
+
+public struct PlayerCreationNetworkMessage: NetworkMessage
+{
+    public CreationNetworkMessage baseCreateion;
 }

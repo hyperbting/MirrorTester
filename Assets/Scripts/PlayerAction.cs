@@ -22,6 +22,7 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
         OnJoinedRoomSync();
     }
 
+    [SerializeField] GameObject selectedInteractable;
     // Update is called once per frame
     void Update()
     {
@@ -66,13 +67,28 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            playerSyncData?.instantiateHelper.CmdRemoveOne(playerSyncData?.targetNI.gameObject);
+            playerSyncData?.instantiateHelper.CmdRemoveOne(selectedInteractable);
         }
 
         if (Input.GetKeyDown(KeyCode.G))
-            playerSyncData?.RequestAuthority();
+            playerSyncData?.RequestAuthority(selectedInteractable);
         if (Input.GetKeyDown(KeyCode.H))
-            playerSyncData?.RemoveClientAuthority();
+            playerSyncData?.RemoveClientAuthority(selectedInteractable);
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100.0f) && hit.transform.tag == "Interactable")
+            {
+                Debug.Log("Mouse selected the " + hit.transform.name); // ensure you picked right object
+                selectedInteractable = hit.transform.gameObject;
+            }
+            else
+            {
+                Debug.Log("Mouse None Selected");
+                selectedInteractable = null;
+            }
+        }
     }
 
     public void OnJoinedRoomSync()
