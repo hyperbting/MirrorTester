@@ -26,9 +26,14 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
     // Update is called once per frame
     void Update()
     {
-        // movement for local player
         if (!isLocalPlayer) return;
 
+        // movement for local player
+        UserInput();
+    }
+
+    void UserInput()
+    {
         // rotate
         float horizontal = Input.GetAxis("Horizontal");
         //transform.Rotate(horizontal * rotationSpeed * Time.deltaTime, 0, 0);
@@ -57,7 +62,7 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
 
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            playerSyncData?.instantiateHelper.CmdAddOne(new CreationNetworkMessage() { networkSyncType = NetworkSyncType.SceneObject});//MainService.Instance.networkCommand.CmdAddOne();
+            playerSyncData?.instantiateHelper.CmdAddOne(new CreationNetworkMessage() { networkSyncType = NetworkSyncType.SceneObject });//MainService.Instance.networkCommand.CmdAddOne();
         }
 
         if (Input.GetKeyDown(KeyCode.U))
