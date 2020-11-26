@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class PlayerAction : MonoBehaviour, INetworkSyncee
 {
@@ -9,11 +11,15 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
     public NavMeshAgent agent;
     public Animator animator;
 
+    [SerializeField] Text nameTagText;
+
     [Header("Movement")]
     public float rotationSpeed = 100;
 
     public bool isLocalPlayer = false;
 
+    [Header("Debug")]
+    [SerializeField] GameObject selectedInteractable;
     [SerializeField] PlayerMainSync playerSyncData;
     public void NetworkSetup(PlayerMainSync playerMainSync)
     {
@@ -21,8 +27,6 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
 
         OnJoinedRoomSync();
     }
-
-    [SerializeField] GameObject selectedInteractable;
     // Update is called once per frame
     void Update()
     {
@@ -59,7 +63,7 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            playerSyncData?.CmdTryUpdatePlayerSyncData(Time.time.ToString());
+            UpdateNameTag(Time.time.ToString());//playerSyncData?.CmdTryUpdatePlayerSyncData(Time.time.ToString());
         }
 
         if (Input.GetKeyDown(KeyCode.Y))
@@ -98,9 +102,20 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
         }
     }
 
+    public void UpdateNameTag(string newTag)
+    {
+        localUpdateNameTag(newTag);
+        playerSyncData?.CmdTryUpdatePlayerSyncData(newTag);
+    }
+
+    public void localUpdateNameTag(string newTag)
+    {
+        nameTagText.text = newTag;
+    }
+
     public void OnJoinedRoomSync()
     {
-        playerSyncData?.CmdTryUpdatePlayerSyncData(Time.time.ToString());
+        playerSyncData?.CmdTryUpdatePlayerSyncData(nameTagText.text);
     }
 }
 

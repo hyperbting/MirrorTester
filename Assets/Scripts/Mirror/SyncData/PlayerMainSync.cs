@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class PlayerMainSync : NetworkBehaviour
 {
-    [SyncVar]
+    [SyncVar(hook = nameof(ClientSideUpdateNameTag))]
     public string usrID;
 
     readonly string ScrTag = "PlayerMainSync";
 
     [Header("Interactee")]
-    [SerializeField] Transform tra;
+    [SerializeField] PlayerAction playerAction;
 
     [Header("Debug")]
     [SerializeField] Collider col;
@@ -30,34 +30,37 @@ public class PlayerMainSync : NetworkBehaviour
     {
         DontDestroyOnLoad(this);
 
-        if (hasAuthority)
+        if (isLocalPlayer)
         {
             gameObject.name = string.Format($"HostPlayerToken [{netId}]");
 
-            tra = MainService.Instance.playerManager.localPlayer.transform;
+            playerAction = MainService.Instance.playerManager.localPlayer.GetComponent<PlayerAction>();
 
             //assign myself to 
             MainService.Instance.playerManager.localPlayer.NetworkSetup(this);
 
-            Debug.Log($"{ScrTag} {gameObject} track HostPlayer!");
+            Debug.Log($"{ScrTag} {gameObject.name} track HostPlayer!");
         }
         else
         {
             gameObject.name = string.Format($"NetPlayer {netId} Token");
 
             // instantiate Player for Other
-            var scr = MainService.Instance.playerManager.Instantiate();
-            scr.transform.SetParent(transform, false);
-            tra = null;
+            playerAction = MainService.Instance.playerManager.Instantiate();
+            playerAction.transform.SetParent(transform, false);
+
+            Debug.Log($"{ScrTag} {gameObject.name} Force OnJoinedRoomSync!");
+            playerAction.localUpdateNameTag(usrID);
         }
     }
 
     private void Update()
     {
-        if (hasAuthority && tra != null)
+        if (hasAuthority && playerAction != null)
         {
-            transform.position = tra.position;
-            transform.rotation = tra.rotation;
+
+            transform.position = playerAction.transform.position;
+            transform.rotation = playerAction.transform.rotation;
         }
     }
 
@@ -86,6 +89,14 @@ public class PlayerMainSync : NetworkBehaviour
         usrID = uid;
     }
     #endregion
+
+    public void ClientSideUpdateNameTag(string old, string newTag)
+    {
+        if (isLocalPlayer)
+            return;
+        Debug.Log($"{ScrTag} ClientSideUpdateNameTag!");
+        playerAction?.UpdateNameTag(newTag);
+    }
 
     //public void OnCreateCharacter(NetworkConnection conn, PlayerCreationNetworkMessage message)
     //{
