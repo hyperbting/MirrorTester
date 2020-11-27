@@ -36,7 +36,7 @@ public class PlayerMainSync : NetworkBehaviour
 
             playerAction = MainService.Instance.playerManager.localPlayer.GetComponent<PlayerAction>();
 
-            //assign myself to 
+            //assign myself to LOCALPlayer
             MainService.Instance.playerManager.localPlayer.NetworkSetup(this);
 
             Debug.Log($"{ScrTag} {gameObject.name} track HostPlayer!");
@@ -45,7 +45,7 @@ public class PlayerMainSync : NetworkBehaviour
         {
             gameObject.name = string.Format($"NetPlayer {netId} Token");
 
-            // instantiate Player for Other
+            // instantiate Player as REMOTE
             playerAction = MainService.Instance.playerManager.Instantiate();
             playerAction.transform.SetParent(transform, false);
 

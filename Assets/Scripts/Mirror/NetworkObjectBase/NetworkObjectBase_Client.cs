@@ -1,19 +1,14 @@
 ﻿using Mirror;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority, IPooledObject
+public partial class NetworkObjectBase : NetworkBehaviour, IPooledObject, IObjectAuthority
 {
-
     [SyncVar(hook = nameof(ClientSideRemoteInit))]
     [SerializeField] CreationNetworkMessage message;
-    public Transform meshRoot;
 
-    readonly string ScrTag = "NetworkObjectBase";
-
+    #region Properties
     [SerializeField] NetworkTransform netTransform;
     public NetworkTransform NetTransform
     {
@@ -49,40 +44,31 @@ public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority, IPooledObje
             return netIdentity;
         }
     }
+    #endregion
 
-    public void Reset()
+    #region IObjectAuthority
+    public Action OnAuthorityObtained { get; set; }
+    public override void OnStartAuthority()
     {
-        if (netTransform != null)
-            netTransform.clientAuthority = false;
+        base.OnStartAuthority();
 
-        // destroy all children
-        foreach (Transform child in transform)
-        {
-            Debug.Log($"{child.gameObject.name}");
-        }
+        Debug.Log($"I own {NID.netId} {message.ToString()}");
+        OnAuthorityObtained?.Invoke();
     }
 
-    void Start()
+    public Action OnAuthorityReleased { get; set; }
+    public override void OnStopAuthority()
     {
-        Debug.Log($"{ScrTag}.Start hasAuthority:{ hasAuthority }");
+        base.OnStopAuthority();
+
+        Debug.Log($"I lose {NID.netId} {message.ToString()}");
+        OnAuthorityReleased?.Invoke();
     }
+    #endregion
 
     public string GetPooledObjectTypeID()
     {
         return netIdentity.assetId.ToString();
-    }
-
-    // setter @server
-    public void ServerSideInit(CreationNetworkMessage pcnMsg)
-    {
-        if (!isServer) return;
-
-        Debug.Log($"NetworkObjectBase.ServerInit {pcnMsg.ToString()}");
-
-        message = pcnMsg;
-        Debug.Log($"NetworkObjectBase.ServerInit Trigger ClientSideRemoteInit");
-
-        Debug.Log($"NetworkObjectBase.ServerInit End {message.ToString()}");
     }
 
     //When CreationNetworkMessage message set, trigger this method
@@ -108,24 +94,6 @@ public class NetworkObjectBase : NetworkBehaviour, IObjectAuthority, IPooledObje
             default:
                 break;
         }
-    }
-
-    public Action OnAuthorityObtained { get; set; }
-    public override void OnStartAuthority()
-    {
-        base.OnStartAuthority();
-
-        Debug.Log($"I own {NID.netId} {message.ToString()}");
-        OnAuthorityObtained?.Invoke();
-    }
-
-    public Action OnAuthorityReleased { get; set; }
-    public override void OnStopAuthority()
-    {
-        base.OnStopAuthority();
-
-        Debug.Log($"I lose {NID.netId} {message.ToString()}");
-        OnAuthorityReleased?.Invoke();
     }
 }
 

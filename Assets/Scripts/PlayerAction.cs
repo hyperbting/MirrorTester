@@ -21,12 +21,13 @@ public class PlayerAction : MonoBehaviour, INetworkSyncee
     [Header("Debug")]
     [SerializeField] GameObject selectedInteractable;
     [SerializeField] PlayerMainSync playerSyncData;
-    public void NetworkSetup(PlayerMainSync playerMainSync)
+    public void NetworkSetup(PlayerMainSync pms)
     {
-        playerSyncData = playerMainSync;
+        playerSyncData = pms;
 
         OnJoinedRoomSync();
     }
+
     // Update is called once per frame
     void Update()
     {
